@@ -3,7 +3,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import os
@@ -18,7 +18,7 @@ ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+security = HTTPBearer()
 
 def hashear_contrasena(contrasena: str) -> str:
     return pwd_context.hash(contrasena)
@@ -32,13 +32,17 @@ def crear_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     payload.update({"exp": expiracion})
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
-def obtener_usuario_actual(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> Usuario:
+def obtener_usuario_actual(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+) -> Usuario:
     credenciales_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Token invalido o expirado",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        token = credentials.credentials
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         correo: str = payload.get("sub")
         if correo is None:
@@ -50,7 +54,12 @@ def obtener_usuario_actual(token: str = Depends(oauth2_scheme), db: Session = De
         raise credenciales_exception
     return usuario
 
-def requerir_admin(usuario_actual: Usuario = Depends(obtener_usuario_actual)) -> Usuario:
+def requerir_admin(
+    usuario_actual: Usuario = Depends(obtener_usuario_actual)
+) -> Usuario:
     if usuario_actual.rol != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Acceso denegado. Se requiere rol de administrador.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acceso denegado. Se requiere rol de administrador."
+        )
     return usuario_actual
