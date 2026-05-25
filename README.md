@@ -6,12 +6,10 @@ Sistema web para la gestion de reservas de espacios institucionales.
 
 ReservaSpace es una aplicacion web que permite a instituciones administrar la reserva de espacios como salas de reuniones, laboratorios, auditorios y aulas especiales. El sistema evita conflictos de horarios, controla el acceso por roles y aplica reglas de negocio para garantizar reservas validas.
 
-## Integrantes del equipo
+## Integrantes
 
-| Nombre | Rol |
-|--------|-----|
-| Felipe Antury | Backend y base de datos |
-| Juan David Restrepo Quintero | Frontend y despliegue |
+- Felipe Antury
+- Juan David Restrepo Quintero
 
 ## Que hace la aplicacion
 
@@ -44,7 +42,7 @@ El sistema se despliega completamente con Docker Compose en Linux o WSL2. Levant
 
 Comandos para desplegar:
 
-git clone https://github.com/TU_USUARIO/reservaspace.git
+git clone https://github.com/JDR23/reservaspace.git
 cd reservaspace
 git checkout ops
 cp .env.example .env
