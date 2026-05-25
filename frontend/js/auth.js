@@ -42,7 +42,6 @@ function mostrarMensaje(idElemento, texto, tipo) {
   el.className = "mensaje " + tipo;
 }
 
-// ── Login form ────────────────────────────────────────────────
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
@@ -66,7 +65,7 @@ if (loginForm) {
       const data = await res.json();
 
       if (!res.ok) {
-        mostrarMensaje("mensajeError", data.detail || "Error al iniciar sesión.", "error");
+        mostrarMensaje("mensajeError", data.detail || "Error al iniciar sesion.", "error");
         return;
       }
 
