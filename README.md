@@ -1,156 +1,178 @@
-# ReservaSpace
-
-Sistema web para la gestion de reservas de espacios institucionales.
-
-## Descripcion general
-
-ReservaSpace es una aplicacion web que permite a instituciones administrar la reserva de espacios como salas de reuniones, laboratorios, auditorios y aulas especiales. El sistema evita conflictos de horarios, controla el acceso por roles y aplica reglas de negocio para garantizar reservas validas.
+# ReservaSpace - Documentacion Tecnica (Rama dev)
 
 ## Integrantes
 
 - Felipe Antury
 - Juan David Restrepo Quintero
 
-## Que hace la aplicacion
+## Descripcion
 
-- Permite a usuarios iniciar sesion con autenticacion JWT
-- Muestra los espacios institucionales disponibles
-- Permite crear, consultar y cancelar reservas
-- Valida automaticamente las reglas de negocio al crear una reserva
-- Permite a administradores gestionar espacios y aprobar o rechazar reservas
+ReservaSpace es una aplicacion web para gestionar reservas de espacios institucionales. Permite a usuarios autenticados consultar espacios y crear reservas, y a administradores gestionar espacios y aprobar o rechazar solicitudes.
 
-## Que problema resuelve
+## Arquitectura
 
-Las instituciones necesitan controlar el uso de sus espacios fisicos para evitar conflictos de horarios, reservas fuera de horario permitido o solicitudes sin suficiente anticipacion. ReservaSpace centraliza este proceso en una plataforma web accesible desde cualquier navegador.
+El sistema sigue una arquitectura de tres capas:
 
-## Arquitectura y tecnologias
+- Frontend: HTML, CSS y JavaScript puro servido por Nginx
+- Backend: API REST desarrollada con FastAPI en Python
+- Base de datos: PostgreSQL gestionada con SQLAlchemy como ORM
 
-Navegador - Frontend HTML CSS JS - Backend FastAPI - PostgreSQL
+## Estructura de carpetas
 
-| Componente | Tecnologia |
-|------------|-----------|
-| Frontend | HTML + CSS + JavaScript puro |
-| Backend | Python + FastAPI |
-| Base de datos | PostgreSQL 15 |
-| Autenticacion | JWT con python-jose |
-| Despliegue | Docker + Docker Compose |
-| Servidor frontend | Nginx |
+reservaspace/
+├── backend/
+│   ├── app/
+│   │   ├── api/           # Endpoints REST
+│   │   ├── models/        # Modelos ORM SQLAlchemy
+│   │   ├── schemas/       # Validacion con Pydantic
+│   │   ├── crud/          # Operaciones de base de datos
+│   │   ├── auth/          # Manejo de JWT
+│   │   ├── db.py          # Conexion a PostgreSQL
+│   │   └── main.py        # Punto de entrada
+│   └── requirements.txt
+├── frontend/
+│   ├── css/styles.css
+│   ├── js/
+│   │   ├── auth.js
+│   │   ├── espacios.js
+│   │   ├── reservas.js
+│   │   └── admin.js
+│   ├── login.html
+│   ├── dashboard_usuario.html
+│   └── dashboard_admin.html
+└── docker-compose.yml
 
-## Resumen del despliegue
+## Tecnologias utilizadas
 
-El sistema se despliega completamente con Docker Compose en Linux o WSL2. Levanta tres contenedores: base de datos, backend y frontend. La documentacion detallada de despliegue se encuentra en la rama ops.
+| Componente | Tecnologia | Version |
+|------------|-----------|---------|
+| Frontend | HTML + CSS + JavaScript | ES6+ |
+| Backend | FastAPI | 0.115.12 |
+| ORM | SQLAlchemy | 2.0.40 |
+| Base de datos | PostgreSQL | 15 |
+| Autenticacion | python-jose JWT | 3.3.0 |
+| Hash contrasenas | passlib bcrypt | 1.7.4 |
+| Validacion | Pydantic | 2.13.4 |
 
-Comandos para desplegar:
+## Modelo de base de datos
 
+### Tabla usuarios
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| id_usuario | PK Integer | Identificador unico |
+| nombre | String(100) | Nombre completo |
+| correo | String(150) | Correo unico |
+| contrasena | String(255) | Hash bcrypt |
+| rol | String(20) | admin o usuario |
+
+### Tabla espacios
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| id_espacio | PK Integer | Identificador unico |
+| nombre | String(100) | Nombre del espacio |
+| ubicacion | String(150) | Ubicacion fisica |
+| capacidad | Integer | Maximo de personas |
+| estado | String(30) | activo, inactivo, en_mantenimiento, no_disponible |
+
+### Tabla reservas
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| id_reserva | PK Integer | Identificador unico |
+| id_usuario | FK Integer | Referencia a usuarios |
+| id_espacio | FK Integer | Referencia a espacios |
+| fecha | Date | Fecha de la reserva |
+| hora_inicio | Time | Hora de inicio |
+| hora_fin | Time | Hora de fin |
+| cantidad_asistentes | Integer | Numero de asistentes |
+| estado | String(20) | esperando, aprobada, rechazada |
+
+## Endpoints de la API
+
+### Autenticacion
+| Metodo | Endpoint | Descripcion | Acceso |
+|--------|----------|-------------|--------|
+| POST | /auth/login | Iniciar sesion | Publico |
+
+### Usuarios
+| Metodo | Endpoint | Descripcion | Acceso |
+|--------|----------|-------------|--------|
+| POST | /usuarios/ | Registrar usuario | Publico |
+| GET | /usuarios/ | Listar usuarios | Admin |
+| GET | /usuarios/me | Ver perfil propio | Autenticado |
+| PUT | /usuarios/{id} | Actualizar usuario | Admin |
+| DELETE | /usuarios/{id} | Eliminar usuario | Admin |
+
+### Espacios
+| Metodo | Endpoint | Descripcion | Acceso |
+|--------|----------|-------------|--------|
+| POST | /espacios/ | Crear espacio | Admin |
+| GET | /espacios/ | Listar espacios | Autenticado |
+| GET | /espacios/activos | Listar espacios activos | Autenticado |
+| PUT | /espacios/{id} | Actualizar espacio | Admin |
+| DELETE | /espacios/{id} | Eliminar espacio | Admin |
+
+### Reservas
+| Metodo | Endpoint | Descripcion | Acceso |
+|--------|----------|-------------|--------|
+| POST | /reservas/ | Crear reserva | Autenticado |
+| GET | /reservas/ | Listar todas | Admin |
+| GET | /reservas/mis-reservas | Ver mis reservas | Autenticado |
+| PUT | /reservas/{id}/estado | Aprobar o rechazar | Admin |
+| DELETE | /reservas/{id} | Cancelar reserva | Autenticado |
+
+## Autenticacion JWT
+
+1. El usuario envia correo y contrasena a POST /auth/login
+2. El backend verifica credenciales y genera un token JWT
+3. El token contiene correo, rol e id del usuario
+4. El frontend guarda el token en sessionStorage
+5. Cada peticion protegida envia el token en el header Authorization: Bearer token
+6. El backend valida el token en cada request
+
+### Roles
+| Rol | Permisos |
+|-----|----------|
+| usuario | Consultar espacios, crear y cancelar sus reservas |
+| admin | Todo lo anterior mas gestionar espacios y cambiar estado de reservas |
+
+## Reglas de negocio implementadas
+
+| ID | Regla |
+|----|-------|
+| A | Solo usuario autenticado puede crear reservas |
+| B | Solo admin puede aprobar o rechazar reservas |
+| C | No se permiten reservas en el mismo espacio, fecha y horario |
+| D | Minimo 24 horas de anticipacion para crear una reserva |
+| E | Horario permitido: Lu-Vi 7:00-20:00, Sa 8:00-12:00, Do no permitido |
+| F | La hora de inicio debe ser anterior a la hora de fin |
+| G | No se pueden reservar espacios inactivos o en mantenimiento |
+| H | La cantidad de asistentes no puede superar la capacidad del espacio |
+| I | Las reservas se crean en estado esperando, solo admin cambia el estado |
+
+## Instrucciones para ejecutar en desarrollo
+
+1. Clonar el repositorio
 git clone https://github.com/JDR23/reservaspace.git
 cd reservaspace
-git checkout ops
-cp .env.example .env
-docker compose up --build -d
+git checkout dev
 
-Acceder en: http://localhost
+2. Crear entorno virtual
+cd backend
+python3 -m venv venv
+source venv/bin/activate
 
-## Tutorial de uso
+3. Instalar dependencias
+pip install -r requirements.txt
 
-### 1. Inicio de sesion
+4. Levantar base de datos con Docker
+docker run --name reservaspace_db \
+  -e POSTGRES_USER=reservaspace_user \
+  -e POSTGRES_PASSWORD=reservaspace_pass \
+  -e POSTGRES_DB=reservaspace_db \
+  -p 5432:5432 -d postgres:15
 
-Abrir http://localhost en el navegador.
-Ingresar correo y contrasena registrados.
-El sistema redirige automaticamente segun el rol del usuario.
+5. Iniciar el backend
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
-### 2. Panel de usuario
-
-#### Consultar espacios disponibles
-- Hacer clic en la pestana Espacios disponibles
-- Ver nombre, ubicacion, capacidad y estado de cada espacio
-- Hacer clic en Actualizar para refrescar la lista
-
-#### Crear una reserva
-- Hacer clic en la pestana Nueva reserva
-- Seleccionar el espacio del listado
-- Ingresar fecha, hora de inicio, hora de fin y cantidad de asistentes
-- Hacer clic en Crear reserva
-- El sistema valida automaticamente las reglas de negocio
-- Si la reserva es valida se crea con estado esperando
-
-#### Consultar mis reservas
-- Hacer clic en la pestana Mis reservas
-- Ver todas las reservas con su estado actual
-- Las reservas en estado esperando pueden ser canceladas
-
-#### Cancelar una reserva
-- En Mis reservas hacer clic en Cancelar
-- Confirmar la accion en el dialogo
-
-### 3. Panel de administrador
-
-#### Gestionar espacios
-- En la pestana Gestionar espacios completar el formulario
-- Ingresar nombre, ubicacion, capacidad y estado
-- Hacer clic en Agregar espacio
-- Los espacios existentes aparecen abajo con opcion de eliminar
-
-#### Aprobar o rechazar reservas
-- Ir a la pestana Gestionar reservas
-- Hacer clic en Actualizar para ver todas las reservas
-- Las reservas en estado esperando muestran botones Aprobar y Rechazar
-- Hacer clic en el boton correspondiente para cambiar el estado
-
-#### Ver usuarios registrados
-- Ir a la pestana Usuarios
-- Hacer clic en Actualizar
-- Ver nombre, correo y rol de cada usuario
-
-### 4. Mensajes de error
-
-| Situacion | Mensaje |
-|-----------|---------|
-| Reserva en domingo | No se permiten reservas los domingos |
-| Menos de 24h de anticipacion | La reserva debe realizarse con al menos 24 horas de anticipacion |
-| Horario fuera de rango | De lunes a viernes solo se permiten reservas entre 7:00 a.m. y 8:00 p.m. |
-| Espacio ocupado | El espacio ya tiene una reserva en ese horario |
-| Capacidad superada | La cantidad de asistentes supera la capacidad del espacio |
-| Espacio inactivo | El espacio no esta disponible |
-
-### 5. Cerrar sesion
-
-Hacer clic en el boton Cerrar sesion en la barra superior.
-El sistema elimina el token y redirige al login.
-
-## Conclusiones
-
-- Se logro integrar exitosamente frontend, backend y base de datos en una aplicacion web funcional
-- La autenticacion con JWT permite controlar el acceso de forma segura segun el rol del usuario
-- Las reglas de negocio implementadas en el backend garantizan la integridad de las reservas
-- Docker Compose simplifica el despliegue al eliminar diferencias entre entornos
-- El uso de FastAPI acelero el desarrollo gracias a su documentacion automatica con Swagger
-
-## Dificultades encontradas
-
-- Compatibilidad de SQLAlchemy y psycopg2 con Python 3.14 requirio ajuste de versiones
-- La configuracion de CORS fue necesaria para permitir la comunicacion entre frontend y backend
-- El manejo del token JWT en el frontend requirio cuidado en el almacenamiento y envio en headers
-- La gestion de ramas en Git requirio organizacion para mantener dev, ops y main sincronizadas
-
-## Aprendizajes
-
-- Arquitectura modular del backend con FastAPI separando modelos, schemas, crud y api
-- Implementacion practica de autenticacion y autorizacion con JWT y roles
-- Uso de Docker Compose para orquestar multiples servicios con redes y volumenes
-- Control de versiones colaborativo con Git usando ramas por funcion
-
-## Mejoras futuras
-
-- Agregar notificaciones por correo al aprobar o rechazar reservas
-- Implementar calendario visual para ver disponibilidad de espacios
-- Agregar paginacion en los listados de reservas y usuarios
-- Implementar recuperacion de contrasena por correo
-- Agregar reportes y estadisticas de uso de espacios
-
-## Referencias
-
-- FastAPI Documentation: https://fastapi.tiangolo.com
-- SQLAlchemy Documentation: https://docs.sqlalchemy.org
-- Docker Documentation: https://docs.docker.com
-- JWT RFC 7519: https://doi.org/10.17487/RFC7519
-- Repositorio de clase: https://github.com/Juanmorales177809/apps_services.git
+6. Abrir el frontend
+Abrir frontend/login.html en el navegador
