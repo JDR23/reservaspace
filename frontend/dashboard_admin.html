@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReservaSpace — Panel Admin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-brand">🏛️ ReservaSpace</div>
+    <div class="navbar-user">
+      <span id="nombreUsuario"></span>
+      <span class="badge badge-admin">Administrador</span>
+      <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="tabs">
+      <button class="tab active" onclick="mostrarTab('espacios')">Gestionar espacios</button>
+      <button class="tab" onclick="mostrarTab('reservas')">Gestionar reservas</button>
+      <button class="tab" onclick="mostrarTab('usuarios')">Usuarios</button>
+    </div>
+
+    <!-- Tab: Espacios -->
+    <div id="tab-espacios" class="tab-content active">
+      <h2>Gestionar espacios</h2>
+
+      <div class="form-card">
+        <h3>Agregar nuevo espacio</h3>
+        <form id="formEspacio">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="esp_nombre" required />
+            </div>
+            <div class="form-group">
+              <label>Ubicación</label>
+              <input type="text" id="esp_ubicacion" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Capacidad</label>
+              <input type="number" id="esp_capacidad" min="1" required />
+            </div>
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="esp_estado">
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+                <option value="en_mantenimiento">En mantenimiento</option>
+                <option value="no_disponible">No disponible</option>
+              </select>
+            </div>
+          </div>
+          <div id="mensajeEspacio" class="mensaje oculto"></div>
+          <button type="submit" class="btn-primary">Agregar espacio</button>
+        </form>
+      </div>
+
+      <h3>Espacios registrados</h3>
+      <button onclick="cargarEspaciosAdmin()" class="btn-secondary">🔄 Actualizar</button>
+      <div id="listaEspaciosAdmin" class="grid-cards"></div>
+    </div>
+
+    <!-- Tab: Reservas -->
+    <div id="tab-reservas" class="tab-content">
+      <h2>Gestionar reservas</h2>
+      <button onclick="cargarTodasReservas()" class="btn-secondary">🔄 Actualizar</button>
+      <div id="listaTodasReservas" class="grid-cards"></div>
+    </div>
+
+    <!-- Tab: Usuarios -->
+    <div id="tab-usuarios" class="tab-content">
+      <h2>Usuarios registrados</h2>
+      <button onclick="cargarUsuarios()" class="btn-secondary">🔄 Actualizar</button>
+      <div id="listaUsuarios" class="grid-cards"></div>
+    </div>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/espacios.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

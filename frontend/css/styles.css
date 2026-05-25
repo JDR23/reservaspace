@@ -1,0 +1,264 @@
+/* ── Reset y variables ───────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary:    #2563eb;
+  --primary-dark: #1d4ed8;
+  --success:    #16a34a;
+  --danger:     #dc2626;
+  --warning:    #d97706;
+  --bg:         #f1f5f9;
+  --white:      #ffffff;
+  --text:       #1e293b;
+  --text-light: #64748b;
+  --border:     #e2e8f0;
+  --radius:     8px;
+  --shadow:     0 2px 8px rgba(0,0,0,0.08);
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Login ───────────────────────────────────────────────────── */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+}
+
+.login-container {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.login-logo { text-align: center; margin-bottom: 32px; }
+.login-logo h1 { font-size: 28px; color: var(--primary); }
+.login-logo p  { color: var(--text-light); margin-top: 4px; }
+
+.login-form h2 {
+  font-size: 20px;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+/* ── Navbar ──────────────────────────────────────────────────── */
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+}
+
+.navbar-brand { font-size: 20px; font-weight: 700; }
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-admin   { background: #fef3c7; color: #92400e; }
+.badge-usuario { background: #dbeafe; color: #1e40af; }
+
+/* ── Container y tabs ────────────────────────────────────────── */
+.container {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 0 24px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+
+.tab:hover  { color: var(--primary); }
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── Formularios ─────────────────────────────────────────────── */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--white);
+  transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+/* ── Botones ─────────────────────────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: var(--white);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: var(--primary); color: white; }
+
+.btn-success {
+  padding: 6px 12px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  padding: 6px 12px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-logout {
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: var(--radius);
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--primary);
+}
+
+.card h3 { font-size: 16px; margin-bottom: 8px; }
+.card p  { font-size: 13px; color: var(--text-light); margin-bottom: 4px; }
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* ── Estados ─────────────────────────────────────────────────── */
+.estado-esperando { color: var(--warning);   font-weight: 600; }
+.estado-aprobada  { color: var(--success);   font-weight: 600; }
+.estado-rechazada { color: var(--danger);    font-weight: 600; }
+.estado-activo    { color: var(--success);   font-weight: 600; }
+.estado-inactivo  { color: var(--text-light);font-weight: 600; }
+
+/* ── Mensajes ────────────────────────────────────────────────── */
+.mensaje {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.mensaje.error   { background: #fee2e2; color: var(--danger);  border: 1px solid #fca5a5; }
+.mensaje.success { background: #dcfce7; color: var(--success); border: 1px solid #86efac; }
+.oculto { display: none; }

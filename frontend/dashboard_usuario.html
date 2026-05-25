@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReservaSpace — Mi Panel</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-brand">🏛️ ReservaSpace</div>
+    <div class="navbar-user">
+      <span id="nombreUsuario"></span>
+      <span class="badge badge-usuario">Usuario</span>
+      <button onclick="cerrarSesion()" class="btn-logout">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="tabs">
+      <button class="tab active" onclick="mostrarTab('espacios')">Espacios disponibles</button>
+      <button class="tab" onclick="mostrarTab('nueva-reserva')">Nueva reserva</button>
+      <button class="tab" onclick="mostrarTab('mis-reservas')">Mis reservas</button>
+    </div>
+
+    <!-- Tab: Espacios -->
+    <div id="tab-espacios" class="tab-content active">
+      <h2>Espacios disponibles</h2>
+      <button onclick="cargarEspacios()" class="btn-secondary">🔄 Actualizar</button>
+      <div id="listaEspacios" class="grid-cards"></div>
+    </div>
+
+    <!-- Tab: Nueva reserva -->
+    <div id="tab-nueva-reserva" class="tab-content">
+      <h2>Crear nueva reserva</h2>
+      <form id="formReserva" class="form-card">
+
+        <div class="form-group">
+          <label for="id_espacio">Espacio</label>
+          <select id="id_espacio" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="hora_inicio">Hora inicio</label>
+            <input type="time" id="hora_inicio" required />
+          </div>
+          <div class="form-group">
+            <label for="hora_fin">Hora fin</label>
+            <input type="time" id="hora_fin" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cantidad_asistentes">Cantidad de asistentes</label>
+          <input type="number" id="cantidad_asistentes" min="1" required />
+        </div>
+
+        <div id="mensajeReserva" class="mensaje oculto"></div>
+
+        <button type="submit" class="btn-primary">Crear reserva</button>
+      </form>
+    </div>
+
+    <!-- Tab: Mis reservas -->
+    <div id="tab-mis-reservas" class="tab-content">
+      <h2>Mis reservas</h2>
+      <button onclick="cargarMisReservas()" class="btn-secondary">🔄 Actualizar</button>
+      <div id="listaMisReservas" class="grid-cards"></div>
+    </div>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/espacios.js"></script>
+  <script src="js/reservas.js"></script>
+</body>
+</html>
