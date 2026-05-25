@@ -1,6 +1,5 @@
 """
-main.py — Punto de entrada principal de la aplicación ReservaSpace
-Configura FastAPI, registra los routers y define los metadatos de la API
+main.py — Punto de entrada principal de ReservaSpace
 """
 
 from fastapi import FastAPI
@@ -8,10 +7,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
-# Cargar variables de entorno
+from app.db import engine, Base
+
+# Importar modelos para que SQLAlchemy los registre y cree las tablas
+from app.models import usuario, espacio, reserva  # noqa: F401
+
 load_dotenv()
 
-# ── Crear instancia de FastAPI ────────────────────────────────────────────────
+# ── Crear tablas en la base de datos al iniciar ───────────────────────────────
+Base.metadata.create_all(bind=engine)
+
+# ── Instancia FastAPI ─────────────────────────────────────────────────────────
 app = FastAPI(
     title="ReservaSpace API",
     description=(
@@ -21,26 +27,21 @@ app = FastAPI(
     version="1.0.0",
     contact={
         "name": "Felipe Antury & Juan David Restrepo",
-        "email": "equipo@reservaspace.com",
     },
 )
 
-# ── Configuración de CORS ─────────────────────────────────────────────────────
-# Permite que el frontend (HTML/JS) consuma la API desde el navegador
+# ── CORS ──────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, reemplazar por el dominio real
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── Ruta de salud (health check) ──────────────────────────────────────────────
+# ── Health check ──────────────────────────────────────────────────────────────
 @app.get("/", tags=["Estado"])
 def health_check():
-    """
-    Endpoint de verificación: confirma que la API está activa.
-    """
     return {
         "status": "ok",
         "app": os.getenv("APP_NAME", "ReservaSpace"),
@@ -48,11 +49,9 @@ def health_check():
         "mensaje": "API de ReservaSpace funcionando correctamente"
     }
 
-
-# ── Registro de routers ───────────────────────────────────────────────────────
-# Se irán importando a medida que se desarrolle cada módulo
+# ── Routers (se activarán en el siguiente paso) ───────────────────────────────
 # from app.api import auth, usuarios, espacios, reservas
-# app.include_router(auth.router,      prefix="/auth",      tags=["Autenticación"])
-# app.include_router(usuarios.router,  prefix="/usuarios",  tags=["Usuarios"])
-# app.include_router(espacios.router,  prefix="/espacios",  tags=["Espacios"])
-# app.include_router(reservas.router,  prefix="/reservas",  tags=["Reservas"])
+# app.include_router(auth.router,     prefix="/auth",     tags=["Autenticación"])
+# app.include_router(usuarios.router, prefix="/usuarios", tags=["Usuarios"])
+# app.include_router(espacios.router, prefix="/espacios", tags=["Espacios"])
+# app.include_router(reservas.router, prefix="/reservas", tags=["Reservas"])
