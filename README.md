@@ -2,10 +2,8 @@
 
 ## Integrantes
 
-| Nombre | Rol |
-|--------|-----|
-| Felipe Antury | Backend y base de datos |
-| Juan David Restrepo Quintero | Frontend y despliegue |
+- Felipe Antury
+- Juan David Restrepo Quintero
 
 ## Requisitos previos
 
@@ -24,7 +22,7 @@ git --version
 
 ## Clonar el repositorio
 
-git clone https://github.com/TU_USUARIO/reservaspace.git
+git clone https://github.com/JDR23/reservaspace.git
 cd reservaspace
 git checkout ops
 
@@ -101,8 +99,6 @@ Verificar contenedores corriendo:
 docker ps
 
 ## Verificacion del sistema
-
-Abrir en el navegador:
 
 | URL | Resultado esperado |
 |-----|-------------------|
