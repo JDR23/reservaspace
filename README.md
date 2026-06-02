@@ -176,3 +176,21 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 6. Abrir el frontend
 Abrir frontend/login.html en el navegador
+
+## Notas del equipo
+
+Este proyecto fue desarrollado en equipo durante el Laboratorio 4.
+Durante el desarrollo aprendimos a trabajar con Git de forma colaborativa,
+a separar el codigo en capas y a desplegar aplicaciones con Docker.
+
+### Division del trabajo
+
+- Juan David Restrepo: desarrollo del backend, modelos, endpoints y despliegue Docker
+- Felipe Antury: frontend, pruebas del sistema y documentacion
+
+### Observaciones tecnicas
+
+- Se uso Python 3.14 lo que requirio ajustar versiones de SQLAlchemy y psycopg2
+- El esquema de autenticacion se cambio de OAuth2PasswordBearer a HTTPBearer
+  para mejor compatibilidad con el Swagger UI
+- Los contenedores se comunican por red interna de Docker usando el nombre del servicio
