@@ -271,3 +271,15 @@ body {
   font-size: 12px;
 }
 
+.bienvenida {
+  background: #dbeafe;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.bienvenida h2 {
+  color: #1e40af;
+  font-size: 20px;
+}
+
+

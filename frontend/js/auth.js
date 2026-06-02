@@ -26,6 +26,14 @@ function verificarAuth(rolRequerido) {
   }
   const nombreEl = document.getElementById("nombreUsuario");
   if (nombreEl) nombreEl.textContent = usuario.nombre;
+
+  const bienvenida = document.getElementById('mensajeBienvenida');
+  if (bienvenida) {
+    const hora = new Date().getHours();
+    let saludo = hora < 12 ? 'Buenos dias' : hora < 18 ? 'Buenas tardes' : 'Buenas noches';
+    bienvenida.textContent = saludo + ', ' + usuario.nombre + '!';
+  }
+
 }
 
 function mostrarTab(nombre) {
